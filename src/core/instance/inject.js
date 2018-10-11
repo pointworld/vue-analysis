@@ -1,7 +1,7 @@
 /* @flow */
 
 import { hasOwn } from 'shared/util'
-import { warn, hasSymbol } from '../util/index'
+import { hasSymbol } from '../util/index'
 import { defineReactive, toggleObserving } from '../observer/index'
 
 export function initProvide (vm: Component) {
@@ -18,19 +18,7 @@ export function initInjections (vm: Component) {
   if (result) {
     toggleObserving(false)
     Object.keys(result).forEach(key => {
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== 'production') {
-        defineReactive(vm, key, result[key], () => {
-          warn(
-            `Avoid mutating an injected value directly since the changes will be ` +
-            `overwritten whenever the provided component re-renders. ` +
-            `injection being mutated: "${key}"`,
-            vm
-          )
-        })
-      } else {
-        defineReactive(vm, key, result[key])
-      }
+      defineReactive(vm, key, result[key])
     })
     toggleObserving(true)
   }
@@ -64,8 +52,6 @@ export function resolveInject (inject: any, vm: Component): ?Object {
           result[key] = typeof provideDefault === 'function'
             ? provideDefault.call(vm)
             : provideDefault
-        } else if (process.env.NODE_ENV !== 'production') {
-          warn(`Injection "${key}" not found`, vm)
         }
       }
     }

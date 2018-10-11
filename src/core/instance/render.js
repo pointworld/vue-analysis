@@ -36,18 +36,8 @@ export function initRender (vm: Component) {
   // they need to be reactive so that HOCs using them are always updated
   const parentData = parentVnode && parentVnode.data
 
-  /* istanbul ignore else */
-  if (process.env.NODE_ENV !== 'production') {
-    defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, () => {
-      !isUpdatingChildComponent && warn(`$attrs is readonly.`, vm)
-    }, true)
-    defineReactive(vm, '$listeners', options._parentListeners || emptyObject, () => {
-      !isUpdatingChildComponent && warn(`$listeners is readonly.`, vm)
-    }, true)
-  } else {
-    defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true)
-    defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true)
-  }
+  defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true)
+  defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true)
 }
 
 export function renderMixin (Vue: Class<Component>) {
@@ -62,13 +52,6 @@ export function renderMixin (Vue: Class<Component>) {
     const vm: Component = this
     const { render, _parentVnode } = vm.$options
 
-    // reset _rendered flag on slots for duplicate slot check
-    if (process.env.NODE_ENV !== 'production') {
-      for (const key in vm.$slots) {
-        // $flow-disable-line
-        vm.$slots[key]._rendered = false
-      }
-    }
 
     if (_parentVnode) {
       vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject
@@ -85,31 +68,10 @@ export function renderMixin (Vue: Class<Component>) {
       handleError(e, vm, `render`)
       // return error render result,
       // or previous vnode to prevent render error causing blank component
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== 'production') {
-        if (vm.$options.renderError) {
-          try {
-            vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e)
-          } catch (e) {
-            handleError(e, vm, `renderError`)
-            vnode = vm._vnode
-          }
-        } else {
-          vnode = vm._vnode
-        }
-      } else {
-        vnode = vm._vnode
-      }
+      vnode = vm._vnode
     }
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
-      if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
-        warn(
-          'Multiple root nodes returned from render function. Render function ' +
-          'should return a single root node.',
-          vm
-        )
-      }
       vnode = createEmptyVNode()
     }
     // set parent
