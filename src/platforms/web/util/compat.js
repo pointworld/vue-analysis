@@ -11,6 +11,6 @@ function getShouldDecode (href: boolean): boolean {
 }
 
 // #3663: IE encodes newlines inside attribute values while other browsers don't
-export const shouldDecodeNewlines = inBrowser ? getShouldDecode(false) : false
+export const shouldDecodeNewlines = getShouldDecode(false)
 // #6828: chrome encodes content in a[href]
-export const shouldDecodeNewlinesForHref = inBrowser ? getShouldDecode(true) : false
+export const shouldDecodeNewlinesForHref = getShouldDecode(true)

@@ -1,13 +1,10 @@
 /* @flow */
 
 import type Watcher from './watcher'
-import config from '../config'
 import { callHook, activateChildComponent } from '../instance/lifecycle'
 
 import {
-  warn,
-  nextTick,
-  devtools
+  nextTick
 } from '../util/index'
 
 export const MAX_UPDATE_COUNT = 100
@@ -26,9 +23,6 @@ let index = 0
 function resetSchedulerState () {
   index = queue.length = activatedChildren.length = 0
   has = {}
-  if (process.env.NODE_ENV !== 'production') {
-    circular = {}
-  }
   waiting = flushing = false
 }
 
@@ -59,21 +53,6 @@ function flushSchedulerQueue () {
     id = watcher.id
     has[id] = null
     watcher.run()
-    // in dev build, check and stop circular updates.
-    if (process.env.NODE_ENV !== 'production' && has[id] != null) {
-      circular[id] = (circular[id] || 0) + 1
-      if (circular[id] > MAX_UPDATE_COUNT) {
-        warn(
-          'You may have an infinite update loop ' + (
-            watcher.user
-              ? `in watcher with expression "${watcher.expression}"`
-              : `in a component render function.`
-          ),
-          watcher.vm
-        )
-        break
-      }
-    }
   }
 
   // keep copies of post queues before resetting state
@@ -85,12 +64,6 @@ function flushSchedulerQueue () {
   // call component updated and activated hooks
   callActivatedHooks(activatedQueue)
   callUpdatedHooks(updatedQueue)
-
-  // devtool hook
-  /* istanbul ignore if */
-  if (devtools && config.devtools) {
-    devtools.emit('flush')
-  }
 }
 
 function callUpdatedHooks (queue) {
@@ -146,10 +119,6 @@ export function queueWatcher (watcher: Watcher) {
     if (!waiting) {
       waiting = true
 
-      if (process.env.NODE_ENV !== 'production' && !config.async) {
-        flushSchedulerQueue()
-        return
-      }
       nextTick(flushSchedulerQueue)
     }
   }

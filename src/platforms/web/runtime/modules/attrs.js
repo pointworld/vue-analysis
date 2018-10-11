@@ -1,7 +1,5 @@
 /* @flow */
 
-import { isIE, isIE9, isEdge } from 'core/util/env'
-
 import {
   extend,
   isDef,
@@ -41,12 +39,7 @@ function updateAttrs (oldVnode: VNodeWithData, vnode: VNodeWithData) {
       setAttr(elm, key, cur)
     }
   }
-  // #4391: in IE9, setting type can reset value for input[type=radio]
-  // #6666: IE/Edge forces progress value down to 1 before setting a max
-  /* istanbul ignore if */
-  if ((isIE || isEdge) && attrs.value !== oldAttrs.value) {
-    setAttr(elm, 'value', attrs.value)
-  }
+
   for (key in oldAttrs) {
     if (isUndef(attrs[key])) {
       if (isXlink(key)) {
@@ -91,23 +84,6 @@ function baseSetAttr (el, key, value) {
   if (isFalsyAttrValue(value)) {
     el.removeAttribute(key)
   } else {
-    // #7138: IE10 & 11 fires input event when setting placeholder on
-    // <textarea>... block the first input event and remove the blocker
-    // immediately.
-    /* istanbul ignore if */
-    if (
-      isIE && !isIE9 &&
-      el.tagName === 'TEXTAREA' &&
-      key === 'placeholder' && !el.__ieph
-    ) {
-      const blocker = e => {
-        e.stopImmediatePropagation()
-        el.removeEventListener('input', blocker)
-      }
-      el.addEventListener('input', blocker)
-      // $flow-disable-line
-      el.__ieph = true /* IE placeholder patched */
-    }
     el.setAttribute(key, value)
   }
 }

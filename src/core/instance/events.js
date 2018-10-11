@@ -1,11 +1,9 @@
 /* @flow */
 
 import {
-  tip,
   toArray,
   hyphenate,
   handleError,
-  formatComponentName
 } from '../util/index'
 import { updateListeners } from '../vdom/helpers/index'
 

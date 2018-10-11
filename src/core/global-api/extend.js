@@ -2,7 +2,7 @@
 
 import { ASSET_TYPES } from 'shared/constants'
 import { defineComputed, proxy } from '../instance/state'
-import { extend, mergeOptions, validateComponentName } from '../util/index'
+import { extend, mergeOptions } from '../util/index'
 
 export function initExtend (Vue: GlobalAPI) {
   /**
@@ -26,9 +26,6 @@ export function initExtend (Vue: GlobalAPI) {
     }
 
     const name = extendOptions.name || Super.options.name
-    if (process.env.NODE_ENV !== 'production' && name) {
-      validateComponentName(name)
-    }
 
     const Sub = function VueComponent (options) {
       this._init(options)

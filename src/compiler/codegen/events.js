@@ -98,10 +98,6 @@ function genHandler (
     if (isMethodPath || isFunctionExpression) {
       return handler.value
     }
-    /* istanbul ignore if */
-    if (__WEEX__ && handler.params) {
-      return genWeexHandler(handler.params, handler.value)
-    }
     return `function($event){${handler.value}}` // inline statement
   } else {
     let code = ''
@@ -138,10 +134,6 @@ function genHandler (
       : isFunctionExpression
         ? `return (${handler.value})($event)`
         : handler.value
-    /* istanbul ignore if */
-    if (__WEEX__ && handler.params) {
-      return genWeexHandler(handler.params, code + handlerCode)
-    }
     return `function($event){${code}${handlerCode}}`
   }
 }

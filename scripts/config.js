@@ -4,7 +4,6 @@ const alias = require('rollup-plugin-alias')
 const replace = require('rollup-plugin-replace')
 const flow = require('rollup-plugin-flow-no-whitespace')
 const version = process.env.VERSION || require('../package.json').version
-const weexVersion = process.env.WEEX_VERSION || require('../packages/weex-vue-framework/package.json').version
 
 
 const aliases = require('./alias')
@@ -43,8 +42,6 @@ function genConfig (name) {
     external: opts.external,
     plugins: [
       replace({
-        __WEEX__: !!opts.weex,
-        __WEEX_VERSION__: weexVersion,
         __VERSION__: version
       }),
       flow(),

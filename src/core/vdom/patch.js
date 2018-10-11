@@ -168,36 +168,11 @@ export function createPatchFunction (backend) {
         : nodeOps.createElement(tag, vnode)
       setScope(vnode)
 
-      /* istanbul ignore if */
-      if (__WEEX__) {
-        // in Weex, the default insertion order is parent-first.
-        // List items can be optimized to use children-first insertion
-        // with append="tree".
-        const appendAsTree = isDef(data) && isTrue(data.appendAsTree)
-        if (!appendAsTree) {
-          if (isDef(data)) {
-            invokeCreateHooks(vnode, insertedVnodeQueue)
-          }
-          insert(parentElm, vnode.elm, refElm)
-        }
-        createChildren(vnode, children, insertedVnodeQueue)
-        if (appendAsTree) {
-          if (isDef(data)) {
-            invokeCreateHooks(vnode, insertedVnodeQueue)
-          }
-          insert(parentElm, vnode.elm, refElm)
-        }
-      } else {
-        createChildren(vnode, children, insertedVnodeQueue)
-        if (isDef(data)) {
-          invokeCreateHooks(vnode, insertedVnodeQueue)
-        }
-        insert(parentElm, vnode.elm, refElm)
+      createChildren(vnode, children, insertedVnodeQueue)
+      if (isDef(data)) {
+        invokeCreateHooks(vnode, insertedVnodeQueue)
       }
-
-      if (process.env.NODE_ENV !== 'production' && data && data.pre) {
-        creatingElmInVPre--
-      }
+      insert(parentElm, vnode.elm, refElm)
     } else if (isTrue(vnode.isComment)) {
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
@@ -283,9 +258,6 @@ export function createPatchFunction (backend) {
 
   function createChildren (vnode, children, insertedVnodeQueue) {
     if (Array.isArray(children)) {
-      if (process.env.NODE_ENV !== 'production') {
-        checkDuplicateKeys(children)
-      }
       for (let i = 0; i < children.length; ++i) {
         createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
       }
@@ -416,10 +388,6 @@ export function createPatchFunction (backend) {
     // to ensure removed elements stay in correct relative positions
     // during leaving transitions
     const canMove = !removeOnly
-
-    if (process.env.NODE_ENV !== 'production') {
-      checkDuplicateKeys(newCh)
-    }
 
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
       if (isUndef(oldStartVnode)) {
@@ -588,12 +556,6 @@ export function createPatchFunction (backend) {
       vnode.isAsyncPlaceholder = true
       return true
     }
-    // assert node match
-    if (process.env.NODE_ENV !== 'production') {
-      if (!assertNodeMatch(elm, vnode, inVPre)) {
-        return false
-      }
-    }
     if (isDef(data)) {
       if (isDef(i = data.hook) && isDef(i = i.init)) i(vnode, true /* hydrating */)
       if (isDef(i = vnode.componentInstance)) {
@@ -611,16 +573,6 @@ export function createPatchFunction (backend) {
           // v-html and domProps: innerHTML
           if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
             if (i !== elm.innerHTML) {
-              /* istanbul ignore if */
-              if (process.env.NODE_ENV !== 'production' &&
-                typeof console !== 'undefined' &&
-                !hydrationBailed
-              ) {
-                hydrationBailed = true
-                console.warn('Parent: ', elm)
-                console.warn('server innerHTML: ', i)
-                console.warn('client innerHTML: ', elm.innerHTML)
-              }
               return false
             }
           } else {
@@ -637,15 +589,6 @@ export function createPatchFunction (backend) {
             // if childNode is not null, it means the actual childNodes list is
             // longer than the virtual children list.
             if (!childrenMatch || childNode) {
-              /* istanbul ignore if */
-              if (process.env.NODE_ENV !== 'production' &&
-                typeof console !== 'undefined' &&
-                !hydrationBailed
-              ) {
-                hydrationBailed = true
-                console.warn('Parent: ', elm)
-                console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children)
-              }
               return false
             }
           }
@@ -713,14 +656,6 @@ export function createPatchFunction (backend) {
             if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
               invokeInsertHook(vnode, insertedVnodeQueue, true)
               return oldVnode
-            } else if (process.env.NODE_ENV !== 'production') {
-              warn(
-                'The client-side rendered virtual DOM tree is not matching ' +
-                'server-rendered content. This is likely caused by incorrect ' +
-                'HTML markup, for example nesting block-level elements inside ' +
-                '<p>, or missing <tbody>. Bailing hydration and performing ' +
-                'full client-side render.'
-              )
             }
           }
           // either not server-rendered, or hydration failed.

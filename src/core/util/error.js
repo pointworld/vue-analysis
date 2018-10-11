@@ -1,8 +1,6 @@
 /* @flow */
 
 import config from '../config'
-import { warn } from './debug'
-import { inBrowser, inWeex } from './env'
 
 export function handleError (err: Error, vm: any, info: string) {
   if (vm) {
@@ -29,20 +27,7 @@ function globalHandleError (err, vm, info) {
     try {
       return config.errorHandler.call(null, err, vm, info)
     } catch (e) {
-      logError(e, null, 'config.errorHandler')
+      
     }
-  }
-  logError(err, vm, info)
-}
-
-function logError (err, vm, info) {
-  if (process.env.NODE_ENV !== 'production') {
-    warn(`Error in ${info}: "${err.toString()}"`, vm)
-  }
-  /* istanbul ignore else */
-  if ((inBrowser || inWeex) && typeof console !== 'undefined') {
-    console.error(err)
-  } else {
-    throw err
   }
 }

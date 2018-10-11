@@ -1,6 +1,6 @@
 /* @flow */
 
-import { inBrowser, isIE9, warn } from 'core/util/index'
+import { inBrowser, warn } from 'core/util/index'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
 import { activeInstance } from 'core/instance/lifecycle'
 
@@ -105,11 +105,7 @@ export function enter (vnode: VNodeWithData, toggleDisplay: ?() => void) {
       : duration
   )
 
-  if (process.env.NODE_ENV !== 'production' && explicitEnterDuration != null) {
-    checkDuration(explicitEnterDuration, 'enter', vnode)
-  }
-
-  const expectsCSS = css !== false && !isIE9
+  const expectsCSS = css !== false
   const userWantsControl = getHookArgumentsLength(enterHook)
 
   const cb = el._enterCb = once(() => {
@@ -206,7 +202,7 @@ export function leave (vnode: VNodeWithData, rm: Function) {
     duration
   } = data
 
-  const expectsCSS = css !== false && !isIE9
+  const expectsCSS = css !== false
   const userWantsControl = getHookArgumentsLength(leave)
 
   const explicitLeaveDuration: any = toNumber(
@@ -215,9 +211,6 @@ export function leave (vnode: VNodeWithData, rm: Function) {
       : duration
   )
 
-  if (process.env.NODE_ENV !== 'production' && isDef(explicitLeaveDuration)) {
-    checkDuration(explicitLeaveDuration, 'leave', vnode)
-  }
 
   const cb = el._leaveCb = once(() => {
     if (el.parentNode && el.parentNode._pending) {
@@ -276,23 +269,6 @@ export function leave (vnode: VNodeWithData, rm: Function) {
     if (!expectsCSS && !userWantsControl) {
       cb()
     }
-  }
-}
-
-// only used in dev mode
-function checkDuration (val, name, vnode) {
-  if (typeof val !== 'number') {
-    warn(
-      `<transition> explicit ${name} duration is not a valid number - ` +
-      `got ${JSON.stringify(val)}.`,
-      vnode.context
-    )
-  } else if (isNaN(val)) {
-    warn(
-      `<transition> explicit ${name} duration is NaN - ` +
-      'the duration expression might be incorrect.',
-      vnode.context
-    )
   }
 }
 

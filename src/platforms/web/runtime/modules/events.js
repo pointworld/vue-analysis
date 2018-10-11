@@ -2,7 +2,7 @@
 
 import { isDef, isUndef } from 'shared/util'
 import { updateListeners } from 'core/vdom/helpers/index'
-import { withMacroTask, isIE, supportsPassive } from 'core/util/index'
+import { withMacroTask, supportsPassive } from 'core/util/index'
 import { RANGE_TOKEN, CHECKBOX_RADIO_TOKEN } from 'web/compiler/directives/model'
 
 // normalize v-model event tokens that can only be determined at runtime.
@@ -12,8 +12,7 @@ import { RANGE_TOKEN, CHECKBOX_RADIO_TOKEN } from 'web/compiler/directives/model
 function normalizeEvents (on) {
   /* istanbul ignore if */
   if (isDef(on[RANGE_TOKEN])) {
-    // IE input[type=range] only supports `change` event
-    const event = isIE ? 'change' : 'input'
+    const event = 'input'
     on[event] = [].concat(on[RANGE_TOKEN], on[event] || [])
     delete on[RANGE_TOKEN]
   }

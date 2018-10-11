@@ -119,22 +119,18 @@ const computedWatcherOptions = { computed: true }
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
-  // computed properties are just getters during SSR
-  const isSSR = isServerRendering()
 
   for (const key in computed) {
     const userDef = computed[key]
     const getter = typeof userDef === 'function' ? userDef : userDef.get
 
-    if (!isSSR) {
-      // create internal watcher for the computed property.
-      watchers[key] = new Watcher(
-        vm,
-        getter || noop,
-        noop,
-        computedWatcherOptions
-      )
-    }
+    // create internal watcher for the computed property.
+    watchers[key] = new Watcher(
+      vm,
+      getter || noop,
+      noop,
+      computedWatcherOptions
+    )
 
     // component-defined computed properties are already defined on the
     // component prototype. We only need to define computed properties defined

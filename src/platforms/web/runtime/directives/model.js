@@ -8,17 +8,6 @@ import { looseEqual, looseIndexOf } from 'shared/util'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
 import { warn, isIE9, isIE, isEdge } from 'core/util/index'
 
-/* istanbul ignore if */
-if (isIE9) {
-  // http://www.matts411.com/post/internet-explorer-9-oninput/
-  document.addEventListener('selectionchange', () => {
-    const el = document.activeElement
-    if (el && el.vmodel) {
-      trigger(el, 'input')
-    }
-  })
-}
-
 const directive = {
   inserted (el, binding, vnode, oldVnode) {
     if (vnode.tag === 'select') {
@@ -74,12 +63,6 @@ const directive = {
 
 function setSelected (el, binding, vm) {
   actuallySetSelected(el, binding, vm)
-  /* istanbul ignore if */
-  if (isIE || isEdge) {
-    setTimeout(() => {
-      actuallySetSelected(el, binding, vm)
-    }, 0)
-  }
 }
 
 function actuallySetSelected (el, binding, vm) {
