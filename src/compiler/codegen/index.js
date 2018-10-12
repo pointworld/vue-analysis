@@ -470,14 +470,6 @@ function genProps (props: Array<{ name: string, value: any }>): string {
   return res.slice(0, -1)
 }
 
-/* istanbul ignore next */
-function generateValue (value) {
-  if (typeof value === 'string') {
-    return transformSpecialNewlines(value)
-  }
-  return JSON.stringify(value)
-}
-
 // #3895, #4268
 function transformSpecialNewlines (text: string): string {
   return text

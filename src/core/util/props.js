@@ -1,14 +1,9 @@
 /* @flow */
 
-import { warn } from './debug'
 import { observe, toggleObserving, shouldObserve } from '../observer/index'
 import {
   hasOwn,
-  isObject,
-  toRawType,
-  hyphenate,
-  capitalize,
-  isPlainObject
+  hyphenate
 } from 'shared/util'
 
 type PropOptions = {
@@ -80,86 +75,6 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
 }
 
 /**
- * Assert whether a prop is valid.
- */
-function assertProp (
-  prop: PropOptions,
-  name: string,
-  value: any,
-  vm: ?Component,
-  absent: boolean
-) {
-  if (prop.required && absent) {
-    warn(
-      'Missing required prop: "' + name + '"',
-      vm
-    )
-    return
-  }
-  if (value == null && !prop.required) {
-    return
-  }
-  let type = prop.type
-  let valid = !type || type === true
-  const expectedTypes = []
-  if (type) {
-    if (!Array.isArray(type)) {
-      type = [type]
-    }
-    for (let i = 0; i < type.length && !valid; i++) {
-      const assertedType = assertType(value, type[i])
-      expectedTypes.push(assertedType.expectedType || '')
-      valid = assertedType.valid
-    }
-  }
-
-  if (!valid) {
-    warn(
-      getInvalidTypeMessage(name, value, expectedTypes),
-      vm
-    )
-    return
-  }
-  const validator = prop.validator
-  if (validator) {
-    if (!validator(value)) {
-      warn(
-        'Invalid prop: custom validator check failed for prop "' + name + '".',
-        vm
-      )
-    }
-  }
-}
-
-const simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/
-
-function assertType (value: any, type: Function): {
-  valid: boolean;
-  expectedType: string;
-} {
-  let valid
-  const expectedType = getType(type)
-  if (simpleCheckRE.test(expectedType)) {
-    const t = typeof value
-    valid = t === expectedType.toLowerCase()
-    // for primitive wrapper objects
-    if (!valid && t === 'object') {
-      valid = value instanceof type
-    }
-  } else if (expectedType === 'Object') {
-    valid = isPlainObject(value)
-  } else if (expectedType === 'Array') {
-    valid = Array.isArray(value)
-  } else {
-    valid = value instanceof type
-  }
-  return {
-    valid,
-    expectedType
-  }
-}
-
-/**
  * Use function string name to check built-in types,
  * because a simple equality check will fail when running
  * across different vms / iframes.
@@ -183,44 +98,4 @@ function getTypeIndex (type, expectedTypes): number {
     }
   }
   return -1
-}
-
-function getInvalidTypeMessage (name, value, expectedTypes) {
-  let message = `Invalid prop: type check failed for prop "${name}".` +
-    ` Expected ${expectedTypes.map(capitalize).join(', ')}`
-  const expectedType = expectedTypes[0]
-  const receivedType = toRawType(value)
-  const expectedValue = styleValue(value, expectedType)
-  const receivedValue = styleValue(value, receivedType)
-  // check if we need to specify expected value
-  if (expectedTypes.length === 1 &&
-      isExplicable(expectedType) &&
-      !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`
-  }
-  message += `, got ${receivedType} `
-  // check if we need to specify received value
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`
-  }
-  return message
-}
-
-function styleValue (value, type) {
-  if (type === 'String') {
-    return `"${value}"`
-  } else if (type === 'Number') {
-    return `${Number(value)}`
-  } else {
-    return `${value}`
-  }
-}
-
-function isExplicable (value) {
-  const explicitTypes = ['string', 'number', 'boolean']
-  return explicitTypes.some(elem => value.toLowerCase() === elem)
-}
-
-function isBoolean (...args) {
-  return args.some(elem => elem.toLowerCase() === 'boolean')
 }

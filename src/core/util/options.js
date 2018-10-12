@@ -14,7 +14,6 @@ import {
   extend,
   hasOwn,
   camelize,
-  toRawType,
   capitalize,
   isBuiltInTag,
   isPlainObject
@@ -99,7 +98,6 @@ strats.data = function (
 ): ?Function {
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
-
       return parentVal
     }
     return mergeDataOrFn(parentVal, childVal)
@@ -215,15 +213,6 @@ const defaultStrat = function (parentVal: any, childVal: any): any {
     : childVal
 }
 
-/**
- * Validate component names
- */
-function checkComponents (options: Object) {
-  for (const key in options.components) {
-    validateComponentName(key)
-  }
-}
-
 export function validateComponentName (name: string) {
   if (!/^[a-zA-Z][\w-]*$/.test(name)) {
     warn(
@@ -256,7 +245,7 @@ function normalizeProps (options: Object, vm: ?Component) {
       if (typeof val === 'string') {
         name = camelize(val)
         res[name] = { type: null }
-      } 
+      }
     }
   } else if (isPlainObject(props)) {
     for (const key in props) {
@@ -288,7 +277,7 @@ function normalizeInject (options: Object, vm: ?Component) {
         ? extend({ from: key }, val)
         : { from: val }
     }
-  } 
+  }
 }
 
 /**
@@ -303,16 +292,6 @@ function normalizeDirectives (options: Object) {
         dirs[key] = { bind: def, update: def }
       }
     }
-  }
-}
-
-function assertObjectType (name: string, value: any, vm: ?Component) {
-  if (!isPlainObject(value)) {
-    warn(
-      `Invalid value for option "${name}": expected an Object, ` +
-      `but got ${toRawType(value)}.`,
-      vm
-    )
   }
 }
 

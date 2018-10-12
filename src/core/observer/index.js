@@ -5,13 +5,10 @@ import VNode from '../vdom/vnode'
 import { arrayMethods } from './array'
 import {
   def,
-  warn,
   hasOwn,
   hasProto,
   isObject,
   isPlainObject,
-  isPrimitive,
-  isUndef,
   isValidArrayIndex,
   isServerRendering
 } from '../util/index'

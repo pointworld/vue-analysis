@@ -2,8 +2,7 @@
 
 import {
   toArray,
-  hyphenate,
-  handleError,
+  handleError
 } from '../util/index'
 import { updateListeners } from '../vdom/helpers/index'
 

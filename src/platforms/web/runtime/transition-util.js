@@ -1,6 +1,5 @@
 /* @flow */
 
-import { inBrowser } from 'core/util/index'
 import { addClass, removeClass } from './class-util'
 import { remove, extend, cached } from 'shared/util'
 
@@ -32,7 +31,7 @@ const autoCssTransition: (name: string) => Object = cached(name => {
   }
 })
 
-export const hasTransition = inBrowser
+export const hasTransition = true
 const TRANSITION = 'transition'
 const ANIMATION = 'animation'
 
@@ -58,11 +57,9 @@ if (hasTransition) {
 }
 
 // binding to window is necessary to make hot reload work in IE in strict mode
-const raf = inBrowser
-  ? window.requestAnimationFrame
-    ? window.requestAnimationFrame.bind(window)
-    : setTimeout
-  : /* istanbul ignore next */ fn => fn()
+const raf = window.requestAnimationFrame
+  ? window.requestAnimationFrame.bind(window)
+  : setTimeout
 
 export function nextFrame (fn: Function) {
   raf(() => {

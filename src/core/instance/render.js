@@ -49,7 +49,6 @@ export function renderMixin (Vue: Class<Component>) {
     const vm: Component = this
     const { render, _parentVnode } = vm.$options
 
-
     if (_parentVnode) {
       vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject
     }

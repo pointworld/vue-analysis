@@ -1,7 +1,6 @@
 /* @flow */
 
 import { noop, extend } from 'shared/util'
-import { tip } from 'core/util/debug'
 
 type CompiledFunctionResult = {
   render: Function;
@@ -27,7 +26,6 @@ export function createCompileToFunctionFn (compile: Function): Function {
   ): CompiledFunctionResult {
     options = extend({}, options)
     delete options.warn
-    
     // check cache
     const key = options.delimiters
       ? String(options.delimiters) + template
@@ -38,8 +36,6 @@ export function createCompileToFunctionFn (compile: Function): Function {
 
     // compile
     const compiled = compile(template, options)
-
-    
     // turn code into functions
     const res = {}
     const fnGenErrors = []
@@ -47,7 +43,6 @@ export function createCompileToFunctionFn (compile: Function): Function {
     res.staticRenderFns = compiled.staticRenderFns.map(code => {
       return createFunction(code, fnGenErrors)
     })
-    
 
     return (cache[key] = res)
   }

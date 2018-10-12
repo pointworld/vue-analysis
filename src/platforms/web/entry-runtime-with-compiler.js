@@ -1,7 +1,6 @@
 /* @flow */
 
 import { cached } from 'core/util/index'
-
 import Vue from './runtime/index'
 import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'

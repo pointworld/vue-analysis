@@ -6,7 +6,7 @@ import { parseText } from './text-parser'
 import { parseFilters } from './filter-parser'
 import { genAssignmentCode } from '../directives/model'
 import { extend, cached, no, camelize } from 'shared/util'
-import { isIE, isEdge, isServerRendering } from 'core/util/env'
+import { isServerRendering } from 'core/util/env'
 
 import {
   addProp,
@@ -83,14 +83,6 @@ export function parse (
   let currentParent
   let inVPre = false
   let inPre = false
-  let warned = false
-
-  function warnOnce (msg) {
-    if (!warned) {
-      warned = true
-      warn(msg)
-    }
-  }
 
   function closeElement (element) {
     // check pre state
@@ -118,13 +110,6 @@ export function parse (
       // check namespace.
       // inherit parent ns if there is one
       const ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag)
-
-      // handle IE svg bug
-      /* istanbul ignore if */
-      if (isIE && ns === 'svg') {
-        attrs = guardIESVGBug(attrs)
-      }
-
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
@@ -211,14 +196,6 @@ export function parse (
 
     chars (text: string) {
       if (!currentParent) {
-        return
-      }
-      // IE textarea placeholder bug
-      /* istanbul ignore if */
-      if (isIE &&
-        currentParent.tag === 'textarea' &&
-        currentParent.attrsMap.placeholder === text
-      ) {
         return
       }
       const children = currentParent.children
@@ -313,7 +290,7 @@ export function processFor (el: ASTElement) {
     const res = parseFor(exp)
     if (res) {
       extend(el, res)
-    } 
+    }
   }
 }
 
@@ -369,7 +346,7 @@ function processIfConditions (el, parent) {
       exp: el.elseif,
       block: el
     })
-  } 
+  }
 }
 
 function findPrevElement (children: Array<any>): ASTElement | void {

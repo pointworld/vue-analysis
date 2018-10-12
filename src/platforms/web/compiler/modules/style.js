@@ -1,15 +1,12 @@
 /* @flow */
 
-import { parseText } from 'compiler/parser/text-parser'
 import { parseStyleText } from 'web/util/style'
 import {
   getAndRemoveAttr,
-  getBindingAttr,
-  baseWarn
+  getBindingAttr
 } from 'compiler/helpers'
 
 function transformNode (el: ASTElement, options: CompilerOptions) {
-  const warn = options.warn || baseWarn
   const staticStyle = getAndRemoveAttr(el, 'style')
   if (staticStyle) {
     el.staticStyle = JSON.stringify(parseStyleText(staticStyle))

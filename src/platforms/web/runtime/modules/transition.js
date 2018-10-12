@@ -1,6 +1,5 @@
 /* @flow */
 
-import { inBrowser, warn } from 'core/util/index'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
 import { activeInstance } from 'core/instance/lifecycle'
 
@@ -305,7 +304,7 @@ function _enter (_: any, vnode: VNodeWithData) {
   }
 }
 
-export default inBrowser ? {
+export default {
   create: _enter,
   activate: _enter,
   remove (vnode: VNode, rm: Function) {
@@ -316,4 +315,4 @@ export default inBrowser ? {
       rm()
     }
   }
-} : {}
+}

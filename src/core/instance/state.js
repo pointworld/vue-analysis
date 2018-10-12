@@ -14,14 +14,11 @@ import {
 import {
   bind,
   noop,
-  hasOwn,
-  hyphenate,
   handleError,
   nativeWatch,
   validateProp,
   isPlainObject,
-  isServerRendering,
-  isReservedAttribute
+  isServerRendering
 } from '../util/index'
 
 const sharedPropertyDefinition = {

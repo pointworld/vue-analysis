@@ -4,8 +4,6 @@ import config from 'core/config'
 import { addHandler, addProp, getBindingAttr } from 'compiler/helpers'
 import { genComponentModel, genAssignmentCode } from 'compiler/directives/model'
 
-let warn
-
 // in some cases, the event used has to be determined at runtime
 // so we used some reserved tokens during compile.
 export const RANGE_TOKEN = '__r'
@@ -13,10 +11,8 @@ export const CHECKBOX_RADIO_TOKEN = '__c'
 
 export default function model (
   el: ASTElement,
-  dir: ASTDirective,
-  _warn: Function
+  dir: ASTDirective
 ): ?boolean {
-  warn = _warn
   const value = dir.value
   const modifiers = dir.modifiers
   const tag = el.tag
@@ -38,7 +34,7 @@ export default function model (
     genComponentModel(el, value, modifiers)
     // component v-model doesn't need extra runtime
     return false
-  } 
+  }
   // ensure runtime directive metadata
   return true
 }

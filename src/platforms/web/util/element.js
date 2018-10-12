@@ -1,6 +1,5 @@
 /* @flow */
 
-import { inBrowser } from 'core/util/env'
 import { makeMap } from 'shared/util'
 
 export const namespaceMap = {
@@ -50,10 +49,6 @@ export function getTagNamespace (tag: string): ?string {
 
 const unknownElementCache = Object.create(null)
 export function isUnknownElement (tag: string): boolean {
-  /* istanbul ignore if */
-  if (!inBrowser) {
-    return true
-  }
   if (isReservedTag(tag)) {
     return false
   }

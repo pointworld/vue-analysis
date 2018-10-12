@@ -1,7 +1,6 @@
 /* @flow */
 
 import { extend } from 'shared/util'
-import { detectErrors } from './error-detector'
 import { createCompileToFunctionFn } from './to-function'
 
 export function createCompilerCreator (baseCompile: Function): Function {
@@ -39,9 +38,6 @@ export function createCompilerCreator (baseCompile: Function): Function {
       }
 
       const compiled = baseCompile(template, finalOptions)
-      if (process.env.NODE_ENV !== 'production') {
-        errors.push.apply(errors, detectErrors(compiled.ast))
-      }
       compiled.errors = errors
       compiled.tips = tips
       return compiled

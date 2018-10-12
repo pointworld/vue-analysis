@@ -6,7 +6,6 @@
 import { isTextInputType } from 'web/util/element'
 import { looseEqual, looseIndexOf } from 'shared/util'
 import { mergeVNodeHook } from 'core/vdom/helpers/index'
-import { warn, isIE9, isIE, isEdge } from 'core/util/index'
 
 const directive = {
   inserted (el, binding, vnode, oldVnode) {
@@ -30,10 +29,6 @@ const directive = {
         // this also fixes the issue where some browsers e.g. iOS Chrome
         // fires "change" instead of "input" on autocomplete.
         el.addEventListener('change', onCompositionEnd)
-        /* istanbul ignore if */
-        if (isIE9) {
-          el.vmodel = true
-        }
       }
     }
   },
@@ -69,13 +64,6 @@ function actuallySetSelected (el, binding, vm) {
   const value = binding.value
   const isMultiple = el.multiple
   if (isMultiple && !Array.isArray(value)) {
-    process.env.NODE_ENV !== 'production' && warn(
-      `<select multiple v-model="${binding.expression}"> ` +
-      `expects an Array value for its binding, but got ${
-        Object.prototype.toString.call(value).slice(8, -1)
-      }`,
-      vm
-    )
     return
   }
   let selected, option
