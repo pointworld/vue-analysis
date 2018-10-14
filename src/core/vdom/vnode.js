@@ -1,7 +1,8 @@
 /* @flow */
 
+// abstractly describe a dom node by a class VNode
 export default class VNode {
-  tag: string | void;
+  tag: string | void; // tag name
   data: VNodeData | void;
   children: ?Array<VNode>;
   text: string | void;

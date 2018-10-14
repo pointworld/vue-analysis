@@ -70,6 +70,7 @@ export function createPatchFunction (backend) {
 
   const { modules, nodeOps } = backend
 
+  // forEach hooks and modules, push all hooks functions to cbs
   for (i = 0; i < hooks.length; ++i) {
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
@@ -101,6 +102,8 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // create new node
+  // convert vnode to real node, and mounte to DOM
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -561,6 +564,7 @@ export function createPatchFunction (backend) {
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+    debugger
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
@@ -603,6 +607,7 @@ export function createPatchFunction (backend) {
         const parentElm = nodeOps.parentNode(oldElm)
 
         // create new node
+        // convert vnode to real node, and mounte to DOM
         createElm(
           vnode,
           insertedVnodeQueue,

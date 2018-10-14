@@ -7,11 +7,18 @@
 </head>
 <body>
 <div id="app">
-  {{message}}
 </div>
 <script>
   const app = new Vue({
     el: '#app',
+    render(createElement) {
+      return createElement('div', {
+        attrs: {
+          id: 'app',
+          class: 'app'
+        }
+      }, this.message)
+    },
     data: {
       message: 'point world'
     }

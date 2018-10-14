@@ -54,6 +54,8 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  // called point: initial render, data update
+  // purpose: render vnode to real dom node
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
@@ -165,6 +167,8 @@ export function mountComponent (
   callHook(vm, 'beforeMount')
 
   const updateComponent = () => {
+    // vm._render: render instance to vnode: create
+    // vm._update: convert vnode to real dom node: diff, patch
     vm._update(vm._render(), hydrating)
   }
 

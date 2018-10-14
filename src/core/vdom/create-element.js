@@ -32,6 +32,7 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
+  // function overloading
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -50,6 +51,7 @@ export function _createElement (
   children?: any,
   normalizationType?: number
 ): VNode | Array<VNode> {
+  // data cannot be reactive, avoid using observed data object as vnode data
   if (isDef(data) && isDef((data: any).__ob__)) {
     return createEmptyVNode()
   }
