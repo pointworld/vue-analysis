@@ -11,11 +11,24 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
+/**
+ * If a Vue instance didn’t receive the el option at instantiation, it will
+ * be in “unmounted” state, without an associated DOM element. vm.$mount()
+ * can be used to manually start the mounting of an unmounted Vue instance.
+ *
+ * If elementOrSelector argument is not provided, the template will be
+ * rendered as an off-document element, and you will have to use native
+ * DOM API to insert it into the document yourself.
+ *
+ * The method returns the instance itself so you can chain other instance
+ * methods after it.
+ */
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
+  // get dom object
   el = el && query(el)
 
   const options = this.$options
@@ -63,6 +76,9 @@ function getOuterHTML (el: Element): string {
   }
 }
 
+// add compile to Vue
+// Compiles a template string into a render function. Only available in
+// the full build.
 Vue.compile = compileToFunctions
 
 export default Vue

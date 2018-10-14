@@ -16,7 +16,6 @@ import {
 } from '../util/index'
 
 export let activeInstance: any = null
-export let isUpdatingChildComponent: boolean = false
 
 export function initLifecycle (vm: Component) {
   const options = vm.$options
@@ -30,10 +29,20 @@ export function initLifecycle (vm: Component) {
     parent.$children.push(vm)
   }
 
+  // The parent instance, if the current instance has one.
   vm.$parent = parent
+  // The root Vue instance of the current component tree. If the
+  // current instance has no parents this value will be itself.
   vm.$root = parent ? parent.$root : vm
 
+  // The direct child components of the current instance. Note there’s
+  // no order guarantee for $children, and it is not reactive. If you
+  // find yourself trying to use $children for data binding, consider
+  // using an Array and v-for to generate child components, and use
+  // the Array as the source of truth.
   vm.$children = []
+  // An object of DOM elements and component instances, registered
+  // with ref attributes.
   vm.$refs = {}
 
   vm._watcher = null
@@ -77,6 +86,11 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // updated in a parent's updated hook.
   }
 
+  /**
+   * Force the Vue instance to re-render. Note it does not affect all
+   * child components, only the instance itself and child components
+   * with inserted slot content.
+   */
   Vue.prototype.$forceUpdate = function () {
     const vm: Component = this
     if (vm._watcher) {
@@ -84,6 +98,16 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
   }
 
+  /**
+   * Completely destroy a vm. Clean up its connections with other
+   * existing vms, unbind all its directives, turn off all event listeners.
+   *
+   * Triggers the beforeDestroy and destroyed hooks.
+   *
+   * In normal use cases you shouldn’t have to call this method yourself.
+   * Prefer controlling the lifecycle of child components in a data-driven
+   * fashion using v-if and v-for.
+   */
   Vue.prototype.$destroy = function () {
     const vm: Component = this
     if (vm._isBeingDestroyed) {
@@ -133,6 +157,7 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
+  // The root DOM element that the Vue instance is managing.
   vm.$el = el
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
@@ -191,7 +216,20 @@ export function updateChildComponent (
   // update $attrs and $listeners hash
   // these are also reactive so they may trigger child update if the child
   // used them during render
+  /**
+   * Contains parent-scope attribute bindings (except for class and style)
+   * that are not recognized (and extracted) as props. When a component
+   * doesn’t have any declared props, this essentially contains all
+   * parent-scope bindings (except for class and style), and can be passed
+   * down to an inner component via v-bind="$attrs" - useful when creating
+   * higher-order components.
+   */
   vm.$attrs = parentVnode.data.attrs || emptyObject
+  /**
+   * Contains parent-scope v-on event listeners (without .native modifiers).
+   * This can be passed down to an inner component via v-on="$listeners" -
+   * useful when creating transparent wrapper components.
+   */
   vm.$listeners = listeners || emptyObject
 
   // update props

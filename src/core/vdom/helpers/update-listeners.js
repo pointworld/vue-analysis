@@ -1,6 +1,6 @@
 /* @flow */
 
-import { cached, isUndef, isPlainObject } from 'shared/util'
+import { cached, isUndef } from 'shared/util'
 
 const normalizeEvent = cached((name: string): {
   name: string,
@@ -48,9 +48,9 @@ export function updateListeners (
   remove: Function,
   vm: Component
 ) {
-  let name, def, cur, old, event
+  let name, cur, old, event
   for (name in on) {
-    def = cur = on[name]
+    cur = on[name]
     old = oldOn[name]
     event = normalizeEvent(name)
     if (isUndef(old)) {

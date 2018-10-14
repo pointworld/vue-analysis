@@ -8,6 +8,18 @@ export function initAssetRegisters (Vue: GlobalAPI) {
    * Create asset registration methods.
    */
   ASSET_TYPES.forEach(type => {
+    /**
+     * Vue.component( id, [definition] )
+     * Register or retrieve a global component. Registration
+     * also automatically sets the component’s name with the
+     * given id.
+     *
+     * Vue.directive( id, [definition] )
+     * Register or retrieve a global directive.
+     *
+     * Vue.filter( id, [definition] )
+     * Register or retrieve a global filter.
+     */
     Vue[type] = function (
       id: string,
       definition: Function | Object

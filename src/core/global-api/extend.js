@@ -15,6 +15,12 @@ export function initExtend (Vue: GlobalAPI) {
 
   /**
    * Class inheritance
+   *
+   * Create a “subclass” of the base Vue constructor. The
+   * argument should be an object containing component options.
+   *
+   * The special case to note here is the data option - it must
+   * be a function when used with Vue.extend().
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}

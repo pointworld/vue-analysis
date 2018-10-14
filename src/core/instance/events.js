@@ -42,6 +42,11 @@ export function updateComponentListeners (
 
 export function eventsMixin (Vue: Class<Component>) {
   const hookRE = /^hook:/
+  /**
+   * Listen for a custom event on the current vm. Events can be triggered
+   * by vm.$emit. The callback will receive all the additional arguments
+   * passed into these event-triggering methods.
+   */
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
     if (Array.isArray(event)) {
@@ -59,6 +64,10 @@ export function eventsMixin (Vue: Class<Component>) {
     return vm
   }
 
+  /**
+   * Listen for a custom event, but only once. The listener will be removed
+   * once it triggers for the first time.
+   */
   Vue.prototype.$once = function (event: string, fn: Function): Component {
     const vm: Component = this
     function on () {
@@ -70,6 +79,14 @@ export function eventsMixin (Vue: Class<Component>) {
     return vm
   }
 
+  /**
+   * Remove custom event listener(s).
+   *
+   * If no arguments are provided, remove all event listeners;
+   * If only the event is provided, remove all listeners for that event;
+   * If both event and callback are given, remove the listener for that
+   * specific callback only.
+   */
   Vue.prototype.$off = function (event?: string | Array<string>, fn?: Function): Component {
     const vm: Component = this
     // all
@@ -108,6 +125,10 @@ export function eventsMixin (Vue: Class<Component>) {
     return vm
   }
 
+  /**
+   * Trigger an event on the current instance. Any additional arguments
+   * will be passed into the listener’s callback function.
+   */
   Vue.prototype.$emit = function (event: string): Component {
     const vm: Component = this
     let cbs = vm._events[event]

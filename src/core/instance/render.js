@@ -18,7 +18,24 @@ export function initRender (vm: Component) {
   const options = vm.$options
   const parentVnode = vm.$vnode = options._parentVnode // the placeholder node in parent tree
   const renderContext = parentVnode && parentVnode.context
+  /**
+   * Used to programmatically access content distributed by slots. Each named
+   * slot has its own corresponding property (e.g. the contents of slot="foo"
+   * will be found at vm.$slots.foo). The default property contains any nodes
+   * not included in a named slot.
+   *
+   * Accessing vm.$slots is most useful when writing a component with a render
+   * function.
+   */
   vm.$slots = resolveSlots(options._renderChildren, renderContext)
+  /**
+   * Used to programmatically access scoped slots. For each slot, including
+   * the default one, the object contains a corresponding function that
+   * returns VNodes.
+   *
+   * Accessing vm.$scopedSlots is most useful when writing a component with
+   * a render function.
+   */
   vm.$scopedSlots = emptyObject
   // bind the createElement fn to this instance
   // so that we get proper render context inside it.
@@ -41,6 +58,13 @@ export function renderMixin (Vue: Class<Component>) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)
 
+  /**
+   * Defer the callback to be executed after the next DOM update cycle.
+   * Use it immediately after you’ve changed some data to wait for the
+   * DOM update. This is the same as the global Vue.nextTick, except
+   * that the callback’s this context is automatically bound to the
+   * instance calling this method.
+   */
   Vue.prototype.$nextTick = function (fn: Function) {
     return nextTick(fn, this)
   }

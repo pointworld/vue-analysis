@@ -11,7 +11,6 @@
  */
 
 import VNode, { cloneVNode } from './vnode'
-import config from '../config'
 import { SSR_ATTR } from 'shared/constants'
 import { registerRef } from './modules/ref'
 import { traverse } from '../observer/traverse'
@@ -19,12 +18,10 @@ import { activeInstance } from '../instance/lifecycle'
 import { isTextInputType } from 'web/util/element'
 
 import {
-  warn,
   isDef,
   isUndef,
   isTrue,
   makeMap,
-  isRegExp,
   isPrimitive
 } from '../util/index'
 
@@ -104,24 +101,6 @@ export function createPatchFunction (backend) {
     }
   }
 
-  function isUnknownElement (vnode, inVPre) {
-    return (
-      !inVPre &&
-      !vnode.ns &&
-      !(
-        config.ignoredElements.length &&
-        config.ignoredElements.some(ignore => {
-          return isRegExp(ignore)
-            ? ignore.test(vnode.tag)
-            : ignore === vnode.tag
-        })
-      ) &&
-      config.isUnknownElement(vnode.tag)
-    )
-  }
-
-  let creatingElmInVPre = 0
-
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -149,20 +128,6 @@ export function createPatchFunction (backend) {
     const children = vnode.children
     const tag = vnode.tag
     if (isDef(tag)) {
-      if (process.env.NODE_ENV !== 'production') {
-        if (data && data.pre) {
-          creatingElmInVPre++
-        }
-        if (isUnknownElement(vnode, creatingElmInVPre)) {
-          warn(
-            'Unknown custom element: <' + tag + '> - did you ' +
-            'register the component correctly? For recursive components, ' +
-            'make sure to provide the "name" option.',
-            vnode.context
-          )
-        }
-      }
-
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode)
@@ -441,24 +406,6 @@ export function createPatchFunction (backend) {
     }
   }
 
-  function checkDuplicateKeys (children) {
-    const seenKeys = {}
-    for (let i = 0; i < children.length; i++) {
-      const vnode = children[i]
-      const key = vnode.key
-      if (isDef(key)) {
-        if (seenKeys[key]) {
-          warn(
-            `Duplicate keys detected: '${key}'. This may cause an update error.`,
-            vnode.context
-          )
-        } else {
-          seenKeys[key] = true
-        }
-      }
-    }
-  }
-
   function findIdxInOld (node, oldCh, start, end) {
     for (let i = start; i < end; i++) {
       const c = oldCh[i]
@@ -538,7 +485,6 @@ export function createPatchFunction (backend) {
     }
   }
 
-  let hydrationBailed = false
   // list of modules that can skip create hook during hydration because they
   // are already rendered on the client or has no need for initialization
   // Note: style is excluded because it relies on initial clone for future
@@ -612,17 +558,6 @@ export function createPatchFunction (backend) {
       elm.data = vnode.text
     }
     return true
-  }
-
-  function assertNodeMatch (node, vnode, inVPre) {
-    if (isDef(vnode.tag)) {
-      return vnode.tag.indexOf('vue-component') === 0 || (
-        !isUnknownElement(vnode, inVPre) &&
-        vnode.tag.toLowerCase() === (node.tagName && node.tagName.toLowerCase())
-      )
-    } else {
-      return node.nodeType === (vnode.isComment ? 8 : 3)
-    }
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly) {

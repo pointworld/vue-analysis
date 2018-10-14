@@ -29,9 +29,11 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
+// add __patch__ to Vue.prototype
 Vue.prototype.__patch__ = patch
 
 // public mount method
+// add $mount to Vue.prototype
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean

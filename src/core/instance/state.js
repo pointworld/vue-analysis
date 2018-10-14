@@ -215,12 +215,32 @@ export function stateMixin (Vue: Class<Component>) {
   dataDef.get = function () { return this._data }
   const propsDef = {}
   propsDef.get = function () { return this._props }
+  /**
+   * The data object that the Vue instance is observing. The Vue instance
+   * proxies access to the properties on its data object.
+   */
   Object.defineProperty(Vue.prototype, '$data', dataDef)
+  /**
+   * An object representing the current props a component has received.
+   * The Vue instance proxies access to the properties on its props object.
+   */
   Object.defineProperty(Vue.prototype, '$props', propsDef)
 
+  /**
+   * This is the alias of the global Vue.set.
+   */
   Vue.prototype.$set = set
+  /**
+   * This is the alias of the global Vue.delete.
+   */
   Vue.prototype.$delete = del
 
+  /**
+   * Watch an expression or a computed function on the Vue instance for
+   * changes. The callback gets called with the new value and the old value.
+   * The expression only accepts dot-delimited paths. For more complex
+   * expressions, use a function instead.
+   */
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,

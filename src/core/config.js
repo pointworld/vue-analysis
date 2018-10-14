@@ -47,27 +47,42 @@ export default ({
   silent: false,
 
   /**
-   * Show production mode tip message on boot?
+   * Show production mode tip message on Vue startup?
    */
   productionTip: process.env.NODE_ENV !== 'production',
 
   /**
    * Whether to record perf
+   * Set this to true to enable component init, compile, render
+   * and patch performance tracing in the browser devtool
+   * performance/timeline panel. Only works in development mode
+   * and in browsers that support the performance.mark API.
    */
   performance: false,
 
   /**
    * Error handler for watcher errors
+   * Assign a handler for uncaught errors during component render
+   * function and watchers.
+   * The handler gets called with the error and the Vue instance
    */
   errorHandler: null,
 
   /**
    * Warn handler for watcher warns
+   * Assign a custom handler for runtime Vue warnings.
+   * Note this only works during development and is ignored in
+   * production.
    */
   warnHandler: null,
 
   /**
    * Ignore certain custom elements
+   * Make Vue ignore custom elements defined outside of Vue
+   * (e.g., using the Web Components APIs).
+   * Otherwise, it will throw a warning about an Unknown custom
+   * element, assuming that you forgot to register a global
+   * component or misspelled a component name.
    */
   ignoredElements: [],
 
@@ -78,14 +93,16 @@ export default ({
   keyCodes: Object.create(null),
 
   /**
-   * Check if a tag is reserved so that it cannot be registered as a
-   * component. This is platform-dependent and may be overwritten.
+   * Check if a tag is reserved so that it cannot be registered
+   * as a component. This is platform-dependent and may be
+   * overwritten.
    */
   isReservedTag: no,
 
   /**
-   * Check if an attribute is reserved so that it cannot be used as a component
-   * prop. This is platform-dependent and may be overwritten.
+   * Check if an attribute is reserved so that it cannot be used
+   * as a component prop. This is platform-dependent and may be
+   * overwritten.
    */
   isReservedAttr: no,
 
@@ -106,14 +123,15 @@ export default ({
   parsePlatformTagName: identity,
 
   /**
-   * Check if an attribute must be bound using property, e.g. value
-   * Platform-dependent.
+   * Check if an attribute must be bound using property,
+   * e.g. value Platform-dependent.
    */
   mustUseProp: no,
 
   /**
-   * Perform updates asynchronously. Intended to be used by Vue Test Utils
-   * This will significantly reduce performance if set to false.
+   * Perform updates asynchronously. Intended to be used
+   * by Vue Test Utils This will significantly reduce
+   * performance if set to false.
    */
   async: true,
 
